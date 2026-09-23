@@ -351,6 +351,12 @@ async function initDb() {
   subscribeSchools();
   subscribeDrivers();
   subscribeMovements();
+  setTimeout(() => {
+    if (!state.ready && !dbError) {
+      dbError = "Aucune réponse de Firestore après 10 secondes. Vérifie ta connexion internet et que les règles Firestore ont bien été publiées.";
+      render();
+    }
+  }, 10000);
 }
 
 async function seedSchoolsIfNeeded() {
@@ -646,6 +652,14 @@ async function deleteDriver(id) {
 
 function render() {
   const app = document.getElementById("app");
+  if (dbError && !state.ready) {
+    app.innerHTML = `<div style="padding:40px 20px;text-align:center;">
+      <strong style="color:var(--danger);">Erreur de connexion à la base</strong>
+      <div class="muted" style="margin-top:8px;">${escapeHtml(dbError)}</div>
+      <div class="muted" style="margin-top:12px;">Vérifie que les règles Firestore ont bien été publiées (onglet Règles → bouton Publier).</div>
+    </div>`;
+    return;
+  }
   if (!state.ready) { app.innerHTML = '<div class="loading">Chargement…</div>'; return; }
   app.innerHTML = `
     <header class="topbar">
