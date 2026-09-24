@@ -1,0 +1,1436 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Suivi Bacs & Matériel — Cuisine Centrale</title>
+<style>
+:root {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface-2: #eef0f3;
+  --text: #1a1d23;
+  --text-dim: #6b7280;
+  --border: #e2e4e9;
+  --primary: #2563eb;
+  --primary-dim: #dbe6fe;
+  --ok: #16a34a;
+  --ok-bg: #e7f7ec;
+  --warn: #d97706;
+  --warn-bg: #fdf3e3;
+  --danger: #dc2626;
+  --danger-bg: #fbe9e9;
+  --radius: 14px;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14161a;
+    --surface: #1d2026;
+    --surface-2: #262a32;
+    --text: #eef0f3;
+    --text-dim: #9aa1ad;
+    --border: #33373f;
+    --primary: #5b8cf7;
+    --primary-dim: #1f2c4d;
+    --ok: #4ade80;
+    --ok-bg: #133421;
+    --warn: #fbbf24;
+    --warn-bg: #3a2c0d;
+    --danger: #f87171;
+    --danger-bg: #3b1616;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #14161a;
+  --surface: #1d2026;
+  --surface-2: #262a32;
+  --text: #eef0f3;
+  --text-dim: #9aa1ad;
+  --border: #33373f;
+  --primary: #5b8cf7;
+  --primary-dim: #1f2c4d;
+  --ok: #4ade80;
+  --ok-bg: #133421;
+  --warn: #fbbf24;
+  --warn-bg: #3a2c0d;
+  --danger: #f87171;
+  --danger-bg: #3b1616;
+}
+* { box-sizing: border-box; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); height: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100%;
+}
+header.topbar {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 10;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px calc(14px + env(safe-area-inset-top, 0px)) 16px;
+  padding-top: calc(14px + env(safe-area-inset-top, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+header.topbar h1 {
+  font-size: 16px;
+  margin: 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+header.topbar .sub { font-size: 12px; color: var(--text-dim); }
+.tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--surface-2);
+  border-radius: 999px;
+  padding: 4px;
+}
+.tabs button {
+  border: none;
+  background: transparent;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  cursor: pointer;
+}
+.tabs button.active { background: var(--primary); color: white; }
+main { max-width: 760px; margin: 0 auto; padding: 16px; padding-bottom: 60px; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.card h2 { font-size: 15px; margin: 0 0 12px 0; }
+label { display: block; font-size: 12px; color: var(--text-dim); margin-bottom: 5px; font-weight: 600; }
+select, input[type="text"], input[type="number"], input[type="date"] {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  width: 100%;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+.btn-ok { background: var(--ok); color: white; }
+.btn-sm { width: auto; padding: 8px 12px; font-size: 12px; }
+.toggle2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.toggle2 button {
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+.toggle2 button.on-livraison.active { border-color: var(--primary); background: var(--primary-dim); color: var(--primary); }
+.toggle2 button.on-recup.active { border-color: var(--ok); background: var(--ok-bg); color: var(--ok); }
+.qty-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.qty-grid .item label { font-size: 12px; }
+.pill { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+.pill-ok { background: var(--ok-bg); color: var(--ok); }
+.pill-warn { background: var(--warn-bg); color: var(--warn); }
+.pill-muted { background: var(--surface-2); color: var(--text-dim); }
+.stat-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.stat { background: var(--surface-2); border-radius: 12px; padding: 12px; }
+.stat .n { font-size: 22px; font-weight: 800; }
+.stat .l { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); }
+th { color: var(--text-dim); font-size: 11px; text-transform: uppercase; letter-spacing: .03em; }
+.table-wrap { overflow-x: auto; }
+.school-row { cursor: pointer; }
+.school-row:active { background: var(--surface-2); }
+.muted { color: var(--text-dim); font-size: 12px; }
+.filters { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+.filters select, .filters input { margin-bottom: 0; }
+.toast {
+  position: fixed;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ok);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 13px;
+  box-shadow: 0 6px 20px rgba(0,0,0,.2);
+  z-index: 100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease;
+}
+.toast.show { opacity: 1; }
+.back-link { font-size: 13px; color: var(--primary); background: none; border: none; padding: 4px 0 10px 0; cursor: pointer; font-weight: 700; }
+.new-item-hint { font-size: 12px; color: var(--text-dim); margin: -6px 0 12px 0; }
+.subtabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.subtabs button { border: 1px solid var(--border); background: var(--surface); color: var(--text-dim); padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.subtabs button.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+.empty { text-align: center; padding: 30px 10px; color: var(--text-dim); font-size: 13px; }
+.loading { text-align: center; padding: 40px 10px; color: var(--text-dim); font-size: 13px; }
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+  padding-top: calc(20px + env(safe-area-inset-top, 0px));
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+.modal-box {
+  background: var(--surface);
+  border-radius: var(--radius);
+  padding: 20px;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: 0 10px 40px rgba(0,0,0,.3);
+}
+.modal-box p { font-size: 14px; margin: 0 0 16px 0; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div id="app"><div class="loading">Chargement…</div></div>
+<div id="toast" class="toast"></div>
+
+<!-- Firebase (SDK compat, pas de build nécessaire) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script>
+// ⚠️ À REMPLIR : colle ici la config de TON projet Firebase
+// (Console Firebase → ⚙️ Paramètres du projet → Tes applications → SDK setup and configuration)
+const firebaseConfig = {
+  apiKey: "AIzaSyDuhglPxfaALV7Is8OuJI1w3vjBL2NooYE",
+  authDomain: "bacs-inox-saint-denis.firebaseapp.com",
+  projectId: "bacs-inox-saint-denis",
+  storageBucket: "bacs-inox-saint-denis.firebasestorage.app",
+  messagingSenderId: "426456295316",
+  appId: "1:426456295316:web:a76d72674a1fe4f5989181"
+};
+</script>
+<script>
+const MATERIELS = [
+  { key: "socles", label: "Socles" },
+  { key: "paniers", label: "Paniers" },
+  { key: "caisses", label: "Caisses" },
+  { key: "inox12", label: "Bacs inox 1/2" },
+  { key: "inox13", label: "Bacs inox 1/3" },
+];
+const MAT_KEYS = MATERIELS.map(m => m.key);
+
+const SEED_SCHOOLS = [
+["08","Denis Diderot","A- Plaine scolaire 1"],["10","Mater Pleyel Bis","A- Plaine scolaire 1"],
+["10b","Elem Pleyel","A- Plaine scolaire 1"],["18","Le Lendit","A- Plaine scolaire 1"],
+["29","Gutenberg","A- Plaine scolaire 1"],["31","Aimé Césaire","A- Plaine scolaire 1"],
+["32","Casarès Doisneau","A- Plaine scolaire 1"],["33","Opaline Lacore","A- Plaine scolaire 1"],
+["36","Petits Cailloux","A- Plaine scolaire 1"],["37","Le Cordouan","A- Plaine scolaire 1"],
+["38","Lili Boulanger","A- Plaine scolaire 1"],
+["09","André Diez","B- Centre scolaire 2"],["09bis","Madigou","B- Centre scolaire 2"],
+["11","Les Gueldres","B- Centre scolaire 2"],["14","Paul Langevin","B- Centre scolaire 2"],
+["17","Puy Pensot","B- Centre scolaire 2"],["23","Marcel Sembat","B- Centre scolaire 2"],
+["24","Daniel Sorano","B- Centre scolaire 2"],["25","La Source","B- Centre scolaire 2"],
+["27","Jean Vilar","B- Centre scolaire 2"],["30","Colette Besson","B- Centre scolaire 2"],
+["34","Roseraie de Chambrun","B- Centre scolaire 2"],
+["01","Marville","C- Est scolaire 3"],["04","Cosmonautes","C- Est scolaire 3"],
+["05","Joliot Curie","C- Est scolaire 3"],["07","René Descartes","C- Est scolaire 3"],
+["15","Danielle Casanova","C- Est scolaire 3"],["16","Louis Pasteur","C- Est scolaire 3"],
+["19","Francs Moisin","C- Est scolaire 3"],["20","La Saussaie","C- Est scolaire 3"],
+["26","Vieille Mer","C- Est scolaire 3"],
+["02","Jules Guesdes","D- Ouest scolaire 4"],["03","Corbillon","D- Ouest scolaire 4"],
+["06","Delaunay-Belleville","D- Ouest scolaire 4"],["12","Jules Vallès","D- Ouest scolaire 4"],
+["13","Victor Hugo","D- Ouest scolaire 4"],["21","Pierre Semard","D- Ouest scolaire 4"],
+["22","Roger Semat","D- Ouest scolaire 4"],["28","Brise Échalas","D- Ouest scolaire 4"],
+["35","Confluence","D- Ouest scolaire 4"],
+["","Meriel",""],
+["","Duclos",""],
+["","Excédents Excellents",""],
+["","Réfectoire",""],
+];
+
+let db = null;
+let state = {
+  view: "chauffeur",
+  respTab: "dashboard",
+  drivers: [],
+  schools: [],
+  movements: [],
+  ready: false,
+  driverId: "",
+  schoolId: "",
+  type: "livraison",
+  qty: { socles: "", paniers: "", caisses: "", inox12: "", inox13: "" },
+  detailSchoolId: null,
+  filters: { driverId: "", schoolId: "", type: "" },
+  addingDriver: false,
+  newDriverName: "",
+  newDriverPassword: "",
+  pendingDriverId: "",
+  driverPasswordInput: "",
+  addingSchool: false,
+  newSchool: { name: "", chauffeur: "", adresse: "" },
+  editingMovementId: null,
+  editMovement: null,
+  editingSchoolId: null,
+  editSchool: null,
+  editingDriverId: null,
+  editDriverName: "",
+  confirmAction: null,
+  settings: null,
+  responsableUnlocked: false,
+  responsablePasswordInput: "",
+  responsableSetPw1: "",
+  responsableSetPw2: "",
+};
+
+function today() {
+  const d = new Date();
+  return d.toISOString().slice(0,10);
+}
+function fmtDate(iso) {
+  if (!iso) return "";
+  const [y,m,d] = iso.split("-");
+  return `${d}/${m}/${y.slice(2)}`;
+}
+function showToast(msg, ms) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove("show"), ms || 1800);
+}
+
+function askConfirm(message, onConfirmFn) {
+  state.confirmAction = { message, onConfirmFn };
+  render();
+}
+
+async function initDb() {
+  try {
+    if (String(firebaseConfig.apiKey).includes("REMPLACE_MOI")) {
+      document.getElementById("app").innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--text-dim);font-size:14px;">
+        Configuration Firebase manquante.<br>Renseigne <code>firebaseConfig</code> en haut du fichier HTML (clé du projet Firebase), puis recharge la page.
+      </div>`;
+      return;
+    }
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+  } catch (e) {
+    document.getElementById("app").innerHTML = `<div style="padding:40px 20px;text-align:center;color:var(--text-dim);font-size:14px;">
+      Impossible de se connecter à Firebase. Vérifie la configuration (firebaseConfig) et ta connexion internet.<br><span class="muted">${escapeHtml(e.message||"")}</span>
+    </div>`;
+    return;
+  }
+  await seedSchoolsIfNeeded();
+  subscribeSchools();
+  subscribeDrivers();
+  subscribeMovements();
+  subscribeSettings();
+}
+
+async function seedSchoolsIfNeeded() {
+  let existingNames = new Set();
+  try {
+    const snap = await db.collection("schools").get();
+    existingNames = new Set(snap.docs.map(d => (d.data().name||"").trim().toLowerCase()));
+  } catch (e) { return; }
+  for (const [code, name] of SEED_SCHOOLS) {
+    if (existingNames.has(name.trim().toLowerCase())) continue;
+    try {
+      await db.collection("schools").add({ code, name, chauffeur: "", adresse: "", note: "", active: true });
+    } catch (e) { /* ignore individual failures */ }
+  }
+}
+
+let dbError = null;
+
+function subscribeSchools() {
+  db.collection("schools").onSnapshot(
+    (snap) => {
+      state.schools = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+      state.ready = true;
+      render();
+    },
+    (e) => { dbError = "schools: " + (e && (e.code || e.message) || "erreur inconnue"); console.error("subscribeSchools error", e); render(); }
+  );
+}
+
+function subscribeDrivers() {
+  db.collection("drivers").onSnapshot(
+    (snap) => {
+      state.drivers = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b)=>(a.name||"").localeCompare(b.name||""));
+      if (!state.driverId) {
+        try {
+          const savedId = localStorage.getItem("driverId");
+          if (savedId && state.drivers.some(d => d.id === savedId)) state.driverId = savedId;
+        } catch (e) { /* localStorage unavailable */ }
+      }
+      render();
+    },
+    (e) => { dbError = "drivers: " + (e && (e.code || e.message) || "erreur inconnue"); console.error("subscribeDrivers error", e); render(); }
+  );
+}
+
+function subscribeMovements() {
+  db.collection("movements").onSnapshot(
+    (snap) => {
+      state.movements = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b)=>(b.timestamp||0)-(a.timestamp||0));
+      render();
+    },
+    (e) => { dbError = "movements: " + (e && (e.code || e.message) || "erreur inconnue"); console.error("subscribeMovements error", e); render(); }
+  );
+}
+
+function subscribeSettings() {
+  db.collection("settings").doc("app").onSnapshot(
+    (doc) => {
+      state.settings = doc.exists ? doc.data() : {};
+      render();
+    },
+    (e) => { console.error("subscribeSettings error", e); state.settings = {}; render(); }
+  );
+}
+
+// ---------- Business logic ----------
+
+function emptyMatObj() {
+  const o = {};
+  for (const k of MAT_KEYS) o[k] = 0;
+  return o;
+}
+function balancesForSchool(schoolId) {
+  const bal = emptyMatObj();
+  const livre = emptyMatObj();
+  const recup = emptyMatObj();
+  for (const m of state.movements) {
+    if (m.schoolId !== schoolId) continue;
+    const sign = m.type === "livraison" ? 1 : -1;
+    for (const k of MAT_KEYS) {
+      const v = Number(m[k]) || 0;
+      bal[k] += sign * v;
+      if (m.type === "livraison") livre[k] += v; else recup[k] += v;
+    }
+  }
+  return { bal, livre, recup };
+}
+
+function globalStats() {
+  const d = today();
+  let livToday = 0, recToday = 0;
+  const ecartsSchools = new Set();
+  for (const s of state.schools) {
+    const { bal } = balancesForSchool(s.id);
+    if (MAT_KEYS.some(k => bal[k] !== 0)) ecartsSchools.add(s.id);
+  }
+  for (const m of state.movements) {
+    if (m.date === d) {
+      if (m.type === "livraison") livToday++; else recToday++;
+    }
+  }
+  return {
+    nbChauffeurs: state.drivers.length,
+    nbEcoles: state.schools.length,
+    livToday, recToday,
+    nbEcarts: ecartsSchools.size,
+  };
+}
+
+function driverStats(driverId) {
+  const schoolsSet = new Set();
+  let liv = 0, rec = 0;
+  const restant = emptyMatObj();
+  for (const m of state.movements) {
+    if (m.driverId !== driverId) continue;
+    schoolsSet.add(m.schoolId);
+    if (m.type === "livraison") liv++; else rec++;
+  }
+  // restant à récupérer = solde des écoles habituellement gérées par ce chauffeur (approx via mouvements)
+  for (const sid of schoolsSet) {
+    const { bal } = balancesForSchool(sid);
+    for (const k of MAT_KEYS) restant[k] += Math.max(0, bal[k]);
+  }
+  return { nbEcoles: schoolsSet.size, liv, rec, restant };
+}
+
+// ---------- Actions ----------
+
+async function addDriver(name, password) {
+  name = (name || "").trim();
+  password = (password || "").trim();
+  if (!name) { showToast("Nom requis"); return; }
+  if (!password) { showToast("Mot de passe requis"); return; }
+  const existing = state.drivers.find(d => d.name.toLowerCase() === name.toLowerCase());
+  if (existing) { showToast("Ce nom existe déjà — choisis-le dans la liste plutôt"); return; }
+  try {
+    const ref = await db.collection("drivers").add({ name, password });
+    state.driverId = ref.id;
+    state.addingDriver = false;
+    state.newDriverName = "";
+    state.newDriverPassword = "";
+    try { localStorage.setItem("driverId", ref.id); } catch (e) {}
+    render();
+  } catch (e) {
+    console.error("addDriver failed", e);
+    showToast("Erreur : " + (e && e.code ? e.code : (e && e.message) || "inconnue"), 4500);
+  }
+}
+
+function selectPendingDriver(id) {
+  state.pendingDriverId = id;
+  state.driverPasswordInput = "";
+  render();
+}
+
+function confirmDriverLogin() {
+  const d = state.drivers.find(x => x.id === state.pendingDriverId);
+  if (!d) return;
+  if ((d.password || "") === state.driverPasswordInput) {
+    state.driverId = d.id;
+    state.pendingDriverId = "";
+    state.driverPasswordInput = "";
+    try { localStorage.setItem("driverId", d.id); } catch (e) {}
+    render();
+  } else {
+    showToast("Mot de passe incorrect");
+  }
+}
+
+function logoutDriver() {
+  state.driverId = "";
+  state.pendingDriverId = "";
+  state.driverPasswordInput = "";
+  state.schoolId = "";
+  try { localStorage.removeItem("driverId"); } catch (e) {}
+  render();
+}
+
+async function trySetResponsablePassword() {
+  const p1 = (state.responsableSetPw1 || "").trim();
+  const p2 = (state.responsableSetPw2 || "").trim();
+  if (!p1) { showToast("Mot de passe requis"); return; }
+  if (p1 !== p2) { showToast("Les deux mots de passe ne correspondent pas"); return; }
+  try {
+    await db.collection("settings").doc("app").set({ responsablePassword: p1 });
+    state.responsableUnlocked = true;
+    state.responsableSetPw1 = ""; state.responsableSetPw2 = "";
+    render();
+  } catch (e) {
+    console.error("trySetResponsablePassword failed", e);
+    showToast("Erreur : " + (e && e.code ? e.code : (e && e.message) || "inconnue"), 4500);
+  }
+}
+
+function tryResponsableLogin() {
+  const expected = state.settings && state.settings.responsablePassword;
+  if (state.responsablePasswordInput === expected) {
+    state.responsableUnlocked = true;
+    state.responsablePasswordInput = "";
+    render();
+  } else {
+    showToast("Mot de passe incorrect");
+  }
+}
+
+function lockResponsable() {
+  state.responsableUnlocked = false;
+  render();
+}
+
+async function addSchool() {
+  const { name, chauffeur, adresse } = state.newSchool;
+  if (!name.trim()) { showToast("Nom de l'école requis"); return; }
+  try {
+    await db.collection("schools").add({
+      code: "", name: name.trim(), chauffeur: chauffeur.trim(), adresse: adresse.trim(), note: "", active: true
+    });
+    state.newSchool = { name: "", chauffeur: "", adresse: "" };
+    state.addingSchool = false;
+    showToast("École ajoutée");
+    render();
+  } catch (e) {
+    console.error("addSchool failed", e);
+    showToast("Erreur : " + (e && e.code ? e.code : (e && e.message) || "inconnue"), 4500);
+  }
+}
+
+async function submitMovement() {
+  if (!state.driverId) { showToast("Choisis un chauffeur"); return; }
+  if (!state.schoolId) { showToast("Choisis une école"); return; }
+  const driver = state.drivers.find(d => d.id === state.driverId);
+  const school = state.schools.find(s => s.id === state.schoolId);
+  const q = state.qty;
+  const anyQty = MAT_KEYS.some(k => Number(q[k]) > 0);
+  if (!anyQty) { showToast("Renseigne au moins une quantité"); return; }
+  const data = {
+    date: today(),
+    timestamp: Date.now(),
+    driverId: state.driverId,
+    driverName: driver ? driver.name : "",
+    schoolId: state.schoolId,
+    schoolName: school ? school.name : "",
+    type: state.type,
+  };
+  for (const k of MAT_KEYS) data[k] = Number(q[k]) || 0;
+  try {
+    await db.collection("movements").add(data);
+    state.qty = { socles: "", paniers: "", caisses: "", inox12: "", inox13: "" };
+    showToast(state.type === "livraison" ? "Livraison enregistrée ✓" : "Récupération enregistrée ✓");
+    render();
+  } catch (e) {
+    console.error("submitMovement failed", e);
+    showToast("Échec de l'enregistrement : " + (e && e.code ? e.code : (e && e.message) || "erreur inconnue"), 4500);
+  }
+}
+
+// ---------- Édition / suppression (responsable) ----------
+
+function startEditMovement(id) {
+  const m = state.movements.find(x => x.id === id);
+  if (!m) return;
+  state.editingMovementId = id;
+  state.editMovement = {
+    date: m.date, driverId: m.driverId, schoolId: m.schoolId, type: m.type,
+    socles: m.socles||0, paniers: m.paniers||0, caisses: m.caisses||0, inox12: m.inox12||0, inox13: m.inox13||0,
+  };
+  render();
+}
+function cancelEditMovement() { state.editingMovementId = null; state.editMovement = null; render(); }
+
+async function saveEditMovement() {
+  const id = state.editingMovementId;
+  const em = state.editMovement;
+  if (!id || !em) return;
+  const driver = state.drivers.find(d => d.id === em.driverId);
+  const school = state.schools.find(s => s.id === em.schoolId);
+  const data = {
+    date: em.date, driverId: em.driverId, driverName: driver ? driver.name : "",
+    schoolId: em.schoolId, schoolName: school ? school.name : "", type: em.type,
+  };
+  for (const k of MAT_KEYS) data[k] = Number(em[k]) || 0;
+  try {
+    await db.collection("movements").doc(id).update(data);
+    state.editingMovementId = null; state.editMovement = null;
+    showToast("Mouvement modifié ✓");
+    render();
+  } catch (e) {
+    console.error("saveEditMovement failed", e);
+    showToast("Échec de la modification : " + (e && e.code ? e.code : (e && e.message) || "erreur inconnue"), 4500);
+  }
+}
+
+async function deleteMovement(id) {
+  try {
+    await db.collection("movements").doc(id).delete();
+    showToast("Mouvement supprimé");
+    render();
+  } catch (e) {
+    console.error("deleteMovement failed", e);
+    showToast("Échec de la suppression : " + (e && e.code ? e.code : (e && e.message) || "erreur inconnue"), 4500);
+  }
+}
+
+function startEditSchool(id) {
+  const s = state.schools.find(x => x.id === id);
+  if (!s) return;
+  state.editingSchoolId = id;
+  state.editSchool = { name: s.name||"", chauffeur: s.chauffeur||"", adresse: s.adresse||"" };
+  render();
+}
+function cancelEditSchool() { state.editingSchoolId = null; state.editSchool = null; render(); }
+
+async function saveEditSchool() {
+  const id = state.editingSchoolId;
+  const es = state.editSchool;
+  if (!id || !es || !es.name.trim()) { showToast("Nom de l'école requis"); return; }
+  try {
+    await db.collection("schools").doc(id).update({ name: es.name.trim(), chauffeur: es.chauffeur.trim(), adresse: es.adresse.trim() });
+    state.editingSchoolId = null; state.editSchool = null;
+    showToast("École modifiée ✓");
+    render();
+  } catch (e) {
+    console.error("saveEditSchool failed", e);
+    showToast("Échec de la modification : " + (e && e.code ? e.code : (e && e.message) || "erreur inconnue"), 4500);
+  }
+}
+
+async function deleteSchool(id) {
+  try {
+    await db.collection("schools").doc(id).delete();
+    showToast("École supprimée");
+    render();
+  } catch (e) {
+    console.error("deleteSchool failed", e);
+    showToast("Échec de la suppression : " + (e && e.code ? e.code : (e && e.message) || "erreur inconnue"), 4500);
+  }
+}
+
+function startEditDriver(id) {
+  const d = state.drivers.find(x => x.id === id);
+  if (!d) return;
+  state.editingDriverId = id;
+  state.editDriverName = d.name||"";
+  render();
+}
+function cancelEditDriver() { state.editingDriverId = null; state.editDriverName = ""; render(); }
+
+async function saveEditDriver() {
+  const id = state.editingDriverId;
+  const name = (state.editDriverName||"").trim();
+  if (!id || !name) { showToast("Nom requis"); return; }
+  try {
+    await db.collection("drivers").doc(id).update({ name });
+    state.editingDriverId = null; state.editDriverName = "";
+    showToast("Chauffeur modifié ✓");
+    render();
+  } catch (e) {
+    console.error("saveEditDriver failed", e);
+    showToast("Échec de la modification : " + (e && e.code ? e.code : (e && e.message) || "erreur inconnue"), 4500);
+  }
+}
+
+async function deleteDriver(id) {
+  try {
+    await db.collection("drivers").doc(id).delete();
+    showToast("Chauffeur supprimé");
+    render();
+  } catch (e) {
+    console.error("deleteDriver failed", e);
+    showToast("Échec de la suppression : " + (e && e.code ? e.code : (e && e.message) || "erreur inconnue"), 4500);
+  }
+}
+
+// ---------- Export Excel ----------
+
+function exportExcel() {
+  try {
+    const f = state.filters;
+    let list = [...state.movements];
+    if (f.driverId) list = list.filter(m => m.driverId === f.driverId);
+    if (f.schoolId) list = list.filter(m => m.schoolId === f.schoolId);
+    if (f.type) list = list.filter(m => m.type === f.type);
+    list.sort((a,b) => b.timestamp - a.timestamp);
+
+    const movementRows = list.map(m => {
+      const row = {
+        "Date": fmtDate(m.date),
+        "Chauffeur": m.driverName || "",
+        "École": m.schoolName || "",
+        "Opération": m.type === "livraison" ? "Livraison" : "Récupération",
+      };
+      MATERIELS.forEach(mt => { row[mt.label] = m[mt.key] || 0; });
+      return row;
+    });
+
+    const ecartRows = [...state.schools].sort((a,b)=>a.name.localeCompare(b.name)).map(s => {
+      const { bal, livre, recup } = balancesForSchool(s.id);
+      const row = { "École": s.name, "Chauffeur habituel": s.chauffeur || "" };
+      MATERIELS.forEach(mt => {
+        row[mt.label + " — Livré"] = livre[mt.key];
+        row[mt.label + " — Récupéré"] = recup[mt.key];
+        row[mt.label + " — Solde"] = bal[mt.key];
+      });
+      return row;
+    });
+
+    const wb = XLSX.utils.book_new();
+    const wsMov = XLSX.utils.json_to_sheet(movementRows);
+    XLSX.utils.book_append_sheet(wb, wsMov, "Mouvements");
+    const wsEcarts = XLSX.utils.json_to_sheet(ecartRows);
+    XLSX.utils.book_append_sheet(wb, wsEcarts, "Écarts par école");
+    XLSX.writeFile(wb, `bacs-inox-export-${today()}.xlsx`);
+    showToast("Export téléchargé ✓");
+  } catch (e) {
+    console.error("exportExcel failed", e);
+    showToast("Échec de l'export : " + (e && e.message ? e.message : "erreur inconnue"), 4500);
+  }
+}
+
+// ---------- Rendering ----------
+
+function render() {
+  const app = document.getElementById("app");
+  if (dbError && !state.ready) {
+    app.innerHTML = `<div style="padding:40px 20px;text-align:center;">
+      <strong style="color:var(--danger);">Erreur de connexion à la base</strong>
+      <div class="muted" style="margin-top:8px;">${escapeHtml(dbError)}</div>
+    </div>`;
+    return;
+  }
+  if (!state.ready) { app.innerHTML = '<div class="loading">Chargement…</div>'; return; }
+  try {
+  app.innerHTML = `
+    <header class="topbar">
+      <div>
+        <h1>Suivi Bacs & Matériel</h1>
+        <div class="sub">Cuisine centrale — Saint-Denis</div>
+      </div>
+      <div class="tabs">
+        <button data-tab="chauffeur" class="${state.view==='chauffeur'?'active':''}">Chauffeur</button>
+        <button data-tab="responsable" class="${state.view==='responsable'?'active':''}">Responsable</button>
+      </div>
+    </header>
+    <main>
+      ${dbError ? `<div class="card" style="border-color:var(--danger);background:var(--danger-bg);"><strong style="color:var(--danger);">Erreur de connexion à la base</strong><div class="muted" style="margin-top:4px;">${escapeHtml(dbError)}</div></div>` : ""}
+      ${state.view === 'chauffeur' ? renderChauffeur() : renderResponsable()}
+    </main>
+    ${state.confirmAction ? `
+      <div class="modal-overlay" id="confirmOverlay">
+        <div class="modal-box">
+          <p>${escapeHtml(state.confirmAction.message)}</p>
+          <div class="row2">
+            <button class="btn btn-secondary" id="confirmCancelBtn">Annuler</button>
+            <button class="btn" style="background:var(--danger);color:white;" id="confirmOkBtn">Supprimer</button>
+          </div>
+        </div>
+      </div>
+    ` : ""}
+  `;
+  bindEvents();
+  } catch (e) {
+    console.error("render failed", e);
+    app.innerHTML = `<div style="padding:40px 20px;text-align:center;">
+      <strong style="color:var(--danger);">Une erreur est survenue dans l'affichage</strong>
+      <div class="muted" style="margin-top:8px;">${escapeHtml((e && e.message) || "erreur inconnue")}</div>
+      <button class="btn btn-primary" style="margin-top:16px;" onclick="location.reload()">Recharger la page</button>
+    </div>`;
+  }
+}
+
+function renderSchoolMiniHistory(schoolId) {
+  const school = state.schools.find(s => s.id === schoolId);
+  const hist = state.movements
+    .filter(m => m.schoolId === schoolId)
+    .sort((a,b) => b.timestamp - a.timestamp)
+    .slice(0, 8);
+  return `
+    <div class="card">
+      <h2>Dernières opérations — ${escapeHtml(school ? school.name : "")}</h2>
+      ${hist.length ? `
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Chauffeur</th><th>Op.</th><th>Soc.</th><th>Pan.</th><th>Caiss.</th><th>1/2</th><th>1/3</th></tr></thead>
+        <tbody>
+          ${hist.map(m => `
+            <tr>
+              <td>${fmtDate(m.date)}</td>
+              <td>${escapeHtml(m.driverName)}</td>
+              <td>${m.type==='livraison'?'Livr.':'Récup.'}</td>
+              <td>${m.socles||0}</td><td>${m.paniers||0}</td><td>${m.caisses||0}</td><td>${m.inox12||0}</td><td>${m.inox13||0}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+      </div>
+      ` : `<div class="empty">Aucune opération enregistrée pour cette école pour l'instant.</div>`}
+    </div>
+  `;
+}
+
+function renderChauffeur() {
+  const driverOptions = state.drivers.map(d => `<option value="${d.id}" ${d.id===state.pendingDriverId?'selected':''}>${escapeHtml(d.name)}</option>`).join("");
+  const driverName = (state.drivers.find(d=>d.id===state.driverId)||{}).name;
+  const habitual = state.schools.filter(s => driverName && (s.chauffeur||"").toLowerCase().includes(driverName.toLowerCase()));
+  const others = state.schools.filter(s => !habitual.includes(s));
+  const schoolOptions = `
+    ${habitual.length ? `<optgroup label="Écoles habituelles">${habitual.map(s=>schoolOpt(s)).join("")}</optgroup>`:""}
+    <optgroup label="Toutes les écoles">${others.map(s=>schoolOpt(s)).join("")}</optgroup>
+  `;
+  function schoolOpt(s) {
+    return `<option value="${s.id}" ${s.id===state.schoolId?'selected':''}>${escapeHtml(s.name)}</option>`;
+  }
+
+  if (!state.driverId) {
+    return `
+      <div class="card">
+        <h2>1. Chauffeur</h2>
+        ${state.addingDriver ? `
+          <label>Nom</label>
+          <input type="text" id="newDriverInput" placeholder="Ton nom" value="${escapeHtml(state.newDriverName)}">
+          <label>Choisis un mot de passe (simple, à retenir)</label>
+          <input type="password" id="newDriverPasswordInput" placeholder="Mot de passe" value="${escapeHtml(state.newDriverPassword)}" inputmode="text">
+          <div class="row2">
+            <button class="btn btn-secondary" id="cancelAddDriver">Annuler</button>
+            <button class="btn btn-primary" id="confirmAddDriver">Créer</button>
+          </div>
+        ` : state.pendingDriverId ? `
+          <div class="muted" style="margin-bottom:10px;">Chauffeur : <strong>${escapeHtml((state.drivers.find(d=>d.id===state.pendingDriverId)||{}).name||"")}</strong></div>
+          <label>Mot de passe</label>
+          <input type="password" id="driverPasswordInput" placeholder="Mot de passe" value="${escapeHtml(state.driverPasswordInput)}">
+          <div class="row2">
+            <button class="btn btn-secondary" id="cancelDriverLogin">Annuler</button>
+            <button class="btn btn-primary" id="confirmDriverLogin">Se connecter</button>
+          </div>
+        ` : `
+          <select id="driverSelect">
+            <option value="">— Sélectionner —</option>
+            ${driverOptions}
+          </select>
+          <button class="btn btn-secondary btn-sm" id="startAddDriver">+ Nouveau chauffeur</button>
+        `}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+      <div><span class="muted">Connecté :</span> <strong>${escapeHtml(driverName||"")}</strong></div>
+      <button class="btn btn-secondary btn-sm" id="logoutDriverBtn">Changer</button>
+    </div>
+    <div class="card">
+      <h2>2. École</h2>
+      <select id="schoolSelect">
+        <option value="">— Sélectionner —</option>
+        ${schoolOptions}
+      </select>
+    </div>
+
+    <div class="card">
+      <h2>3. Opération</h2>
+      <div class="toggle2">
+        <button class="on-livraison ${state.type==='livraison'?'active':''}" data-type="livraison">📦 Livraison</button>
+        <button class="on-recup ${state.type==='recuperation'?'active':''}" data-type="recuperation">↩️ Récupération</button>
+      </div>
+      <h2>4. Quantités</h2>
+      <div class="qty-grid">
+        ${MATERIELS.map(m => `
+          <div class="item">
+            <label>${m.label}</label>
+            <input type="number" min="0" inputmode="numeric" data-qty="${m.key}" value="${state.qty[m.key]}" placeholder="0">
+          </div>
+        `).join("")}
+      </div>
+      <button class="btn ${state.type==='livraison'?'btn-primary':'btn-ok'}" id="submitBtn" style="margin-top:6px;">
+        Valider la ${state.type === 'livraison' ? 'livraison' : 'récupération'}
+      </button>
+    </div>
+    ${state.schoolId ? renderSchoolMiniHistory(state.schoolId) : ""}
+
+  `;
+}
+
+function renderResponsable() {
+  if (state.settings === null) {
+    return `<div class="loading">Chargement…</div>`;
+  }
+  if (!state.responsableUnlocked) {
+    const hasPassword = !!(state.settings && state.settings.responsablePassword);
+    return `
+      <div class="card">
+        <h2>${hasPassword ? "Accès responsable" : "Créer le mot de passe responsable"}</h2>
+        ${hasPassword ? `
+          <label>Mot de passe</label>
+          <input type="password" id="responsablePasswordInput" placeholder="Mot de passe" value="${escapeHtml(state.responsablePasswordInput)}">
+          <button class="btn btn-primary" id="responsableLoginBtn">Déverrouiller</button>
+        ` : `
+          <div class="muted" style="margin-bottom:10px;">Aucun mot de passe n'est encore défini pour l'espace responsable. Choisis-en un maintenant.</div>
+          <label>Nouveau mot de passe</label>
+          <input type="password" id="responsableSetPw1" placeholder="Mot de passe" value="${escapeHtml(state.responsableSetPw1)}">
+          <label>Confirme le mot de passe</label>
+          <input type="password" id="responsableSetPw2" placeholder="Confirme" value="${escapeHtml(state.responsableSetPw2)}">
+          <button class="btn btn-primary" id="responsableSetBtn">Définir</button>
+        `}
+      </div>
+    `;
+  }
+  return `
+    <div class="card" style="display:flex;align-items:center;justify-content:flex-end;padding:12px 16px;">
+      <button class="btn btn-secondary btn-sm" id="lockResponsableBtn">🔒 Verrouiller</button>
+    </div>
+    <div class="subtabs">
+      <button data-rtab="dashboard" class="${state.respTab==='dashboard'?'active':''}">Vue générale</button>
+      <button data-rtab="ecoles" class="${state.respTab==='ecoles'?'active':''}">Écoles</button>
+      <button data-rtab="chauffeurs" class="${state.respTab==='chauffeurs'?'active':''}">Chauffeurs</button>
+      <button data-rtab="historique" class="${state.respTab==='historique'?'active':''}">Historique</button>
+    </div>
+    ${state.respTab==='dashboard' ? renderDashboard() : ""}
+    ${state.respTab==='ecoles' ? renderEcolesAdmin() : ""}
+    ${state.respTab==='chauffeurs' ? renderChauffeursAdmin() : ""}
+    ${state.respTab==='historique' ? renderHistorique() : ""}
+  `;
+}
+
+function renderDashboard() {
+  if (state.detailSchoolId) return renderSchoolDetail(state.detailSchoolId);
+  const st = globalStats();
+  const rows = state.schools.map(s => {
+    const { bal } = balancesForSchool(s.id);
+    const hasEcart = MAT_KEYS.some(k => bal[k] !== 0);
+    return { s, bal, hasEcart };
+  }).sort((a,b) => (b.hasEcart - a.hasEcart) || a.s.name.localeCompare(b.s.name));
+  const recent = [...state.movements].sort((a,b)=>b.timestamp-a.timestamp).slice(0,5);
+
+  return `
+    <div class="card">
+      <h2>Vue générale</h2>
+      <div class="stat-grid">
+        <div class="stat"><div class="n">${st.nbChauffeurs}</div><div class="l">Chauffeurs</div></div>
+        <div class="stat"><div class="n">${st.nbEcoles}</div><div class="l">Écoles</div></div>
+        <div class="stat"><div class="n">${st.livToday}</div><div class="l">Livraisons aujourd'hui</div></div>
+        <div class="stat"><div class="n">${st.recToday}</div><div class="l">Récupérations aujourd'hui</div></div>
+        <div class="stat" style="grid-column:1/-1;">
+          <div class="n" style="color:${st.nbEcarts>0?'var(--warn)':'var(--ok)'};">${st.nbEcarts}</div>
+          <div class="l">École(s) avec du matériel non récupéré</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Contrôle — ${state.movements.length} mouvement(s) au total dans la base</h2>
+      ${recent.length ? `
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Chauffeur</th><th>École</th><th>Op.</th></tr></thead>
+        <tbody>
+          ${recent.map(m => `<tr><td>${fmtDate(m.date)}</td><td>${escapeHtml(m.driverName)}</td><td>${escapeHtml(m.schoolName)}</td><td>${m.type==='livraison'?'Livr.':'Récup.'}</td></tr>`).join("")}
+        </tbody>
+      </table>
+      </div>
+      ` : `<div class="empty">Aucun mouvement enregistré pour l'instant.</div>`}
+    </div>
+    <div class="card">
+      <h2>Écarts par école</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>École</th>${MATERIELS.map(m=>`<th>${m.label}</th>`).join("")}<th></th></tr></thead>
+        <tbody>
+          ${rows.map(({s,bal,hasEcart}) => `
+            <tr class="school-row" data-school-detail="${s.id}">
+              <td>${escapeHtml(s.name)}</td>
+              ${MATERIELS.map(m => `<td>${bal[m.key] !== 0 ? `<span class="pill ${bal[m.key]>0?'pill-warn':'pill-muted'}">${bal[m.key]>0?'+':''}${bal[m.key]}</span>` : `<span class="muted">0</span>`}</td>`).join("")}
+              <td>${hasEcart ? '<span class="pill pill-warn">écart</span>' : '<span class="pill pill-ok">OK</span>'}</td>
+            </tr>
+          `).join("") || `<tr><td colspan="6" class="empty">Aucune école</td></tr>`}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderSchoolDetail(schoolId) {
+  const s = state.schools.find(x => x.id === schoolId);
+  if (!s) { state.detailSchoolId = null; return renderDashboard(); }
+  const { bal, livre, recup } = balancesForSchool(schoolId);
+  const hist = state.movements.filter(m => m.schoolId === schoolId).sort((a,b)=>b.timestamp-a.timestamp).slice(0,50);
+  return `
+    <button class="back-link" id="backToDashboard">← Retour</button>
+    <div class="card">
+      <h2>${escapeHtml(s.name)}</h2>
+      <div class="muted" style="margin-bottom:10px;">${s.chauffeur?`Chauffeur habituel : ${escapeHtml(s.chauffeur)}`:"Aucun chauffeur habituel assigné"}</div>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Matériel</th><th>Livré</th><th>Récupéré</th><th>Solde</th></tr></thead>
+        <tbody>
+          ${MATERIELS.map(m => `
+            <tr>
+              <td>${m.label}</td>
+              <td>${livre[m.key]}</td>
+              <td>${recup[m.key]}</td>
+              <td>${bal[m.key] !== 0 ? `<span class="pill pill-warn">${bal[m.key]}</span>` : `<span class="pill pill-ok">0</span>`}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Historique</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Chauffeur</th><th>Op.</th><th>Soc.</th><th>Pan.</th><th>Caiss.</th><th>1/2</th><th>1/3</th></tr></thead>
+        <tbody>
+          ${hist.map(m => `
+            <tr>
+              <td>${fmtDate(m.date)}</td>
+              <td>${escapeHtml(m.driverName)}</td>
+              <td>${m.type==='livraison'?'Livr.':'Récup.'}</td>
+              <td>${m.socles||0}</td><td>${m.paniers||0}</td><td>${m.caisses||0}</td><td>${m.inox12||0}</td><td>${m.inox13||0}</td>
+            </tr>
+          `).join("") || `<tr><td colspan="8" class="empty">Aucun mouvement</td></tr>`}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderEcolesAdmin() {
+  const sorted = [...state.schools].sort((a,b)=>a.name.localeCompare(b.name));
+  return `
+    <div class="card">
+      <h2>Écoles enregistrées (${state.schools.length})</h2>
+      ${!state.addingSchool ? `<button class="btn btn-secondary btn-sm" id="startAddSchool">+ Ajouter une école</button>` : `
+        <label>Nom de l'école</label>
+        <input type="text" id="newSchoolName" value="${escapeHtml(state.newSchool.name)}" placeholder="Ex: École Jean Moulin">
+        <label>Chauffeur habituel (optionnel)</label>
+        <input type="text" id="newSchoolChauffeur" value="${escapeHtml(state.newSchool.chauffeur)}" placeholder="Nom du chauffeur">
+        <label>Adresse (optionnel)</label>
+        <input type="text" id="newSchoolAdresse" value="${escapeHtml(state.newSchool.adresse)}" placeholder="Adresse">
+        <div class="row2">
+          <button class="btn btn-secondary" id="cancelAddSchool">Annuler</button>
+          <button class="btn btn-primary" id="confirmAddSchool">Ajouter</button>
+        </div>
+      `}
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Code</th><th>École</th><th>Chauffeur habituel</th><th></th></tr></thead>
+        <tbody>
+          ${sorted.map(s => {
+            if (state.editingSchoolId === s.id) {
+              const es = state.editSchool;
+              return `<tr>
+                <td colspan="4">
+                  <input type="text" id="editSchoolName" value="${escapeHtml(es.name)}" placeholder="Nom de l'école" style="margin-bottom:8px;">
+                  <input type="text" id="editSchoolChauffeur" value="${escapeHtml(es.chauffeur)}" placeholder="Chauffeur habituel" style="margin-bottom:8px;">
+                  <input type="text" id="editSchoolAdresse" value="${escapeHtml(es.adresse)}" placeholder="Adresse" style="margin-bottom:8px;">
+                  <div class="row2">
+                    <button class="btn btn-secondary btn-sm" id="cancelEditSchool">Annuler</button>
+                    <button class="btn btn-primary btn-sm" id="saveEditSchool">Enregistrer</button>
+                  </div>
+                </td>
+              </tr>`;
+            }
+            return `<tr>
+              <td>${escapeHtml(s.code||"")}</td><td>${escapeHtml(s.name)}</td><td>${escapeHtml(s.chauffeur||"—")}</td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-secondary btn-sm" data-edit-school="${s.id}">✏️</button>
+                <button class="btn btn-secondary btn-sm" data-delete-school="${s.id}" style="color:var(--danger);">🗑️</button>
+              </td>
+            </tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderChauffeursAdmin() {
+  const sorted = [...state.drivers].sort((a,b)=>a.name.localeCompare(b.name));
+  return `
+    <div class="card">
+      <h2>Chauffeurs (${state.drivers.length})</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Nom</th><th>Écoles</th><th>Livr.</th><th>Récup.</th><th>Restant</th><th></th></tr></thead>
+        <tbody>
+          ${sorted.map(d => {
+            if (state.editingDriverId === d.id) {
+              return `<tr>
+                <td colspan="6">
+                  <input type="text" id="editDriverName" value="${escapeHtml(state.editDriverName)}" placeholder="Nom du chauffeur" style="margin-bottom:8px;">
+                  <div class="row2">
+                    <button class="btn btn-secondary btn-sm" id="cancelEditDriver">Annuler</button>
+                    <button class="btn btn-primary btn-sm" id="saveEditDriver">Enregistrer</button>
+                  </div>
+                </td>
+              </tr>`;
+            }
+            const ds = driverStats(d.id);
+            const restantTotal = Object.values(ds.restant).reduce((a,b)=>a+b,0);
+            return `<tr>
+              <td>${escapeHtml(d.name)}</td><td>${ds.nbEcoles}</td><td>${ds.liv}</td><td>${ds.rec}</td>
+              <td>${restantTotal>0?`<span class="pill pill-warn">${restantTotal}</span>`:'<span class="pill pill-ok">0</span>'}</td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-secondary btn-sm" data-edit-driver="${d.id}">✏️</button>
+                <button class="btn btn-secondary btn-sm" data-delete-driver="${d.id}" style="color:var(--danger);">🗑️</button>
+              </td>
+            </tr>`;
+          }).join("") || `<tr><td colspan="6" class="empty">Aucun chauffeur</td></tr>`}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+}
+
+function renderHistorique() {
+  const f = state.filters;
+  let list = [...state.movements];
+  if (f.driverId) list = list.filter(m => m.driverId === f.driverId);
+  if (f.schoolId) list = list.filter(m => m.schoolId === f.schoolId);
+  if (f.type) list = list.filter(m => m.type === f.type);
+  list.sort((a,b) => b.timestamp - a.timestamp);
+  list = list.slice(0, 100);
+
+  const driverOpts = state.drivers.map(d => `<option value="${d.id}" ${f.driverId===d.id?'selected':''}>${escapeHtml(d.name)}</option>`).join("");
+  const schoolOpts = state.schools.map(s => `<option value="${s.id}" ${f.schoolId===s.id?'selected':''}>${escapeHtml(s.name)}</option>`).join("");
+
+  function editRowHtml(m) {
+    const em = state.editMovement;
+    const driverOptsEdit = state.drivers.map(d => `<option value="${d.id}" ${em.driverId===d.id?'selected':''}>${escapeHtml(d.name)}</option>`).join("");
+    const schoolOptsEdit = state.schools.map(s => `<option value="${s.id}" ${em.schoolId===s.id?'selected':''}>${escapeHtml(s.name)}</option>`).join("");
+    return `<tr>
+      <td colspan="9">
+        <div class="row2" style="margin-bottom:8px;">
+          <div><label>Date</label><input type="date" id="editMovDate" value="${em.date}" style="margin-bottom:0;"></div>
+          <div><label>Opération</label>
+            <select id="editMovType" style="margin-bottom:0;">
+              <option value="livraison" ${em.type==='livraison'?'selected':''}>Livraison</option>
+              <option value="recuperation" ${em.type==='recuperation'?'selected':''}>Récupération</option>
+            </select>
+          </div>
+        </div>
+        <label>Chauffeur</label>
+        <select id="editMovDriver">${driverOptsEdit}</select>
+        <label>École</label>
+        <select id="editMovSchool">${schoolOptsEdit}</select>
+        <div class="qty-grid" style="margin-bottom:10px;">
+          ${MATERIELS.map(mt => `<div class="item"><label>${mt.label}</label><input type="number" min="0" id="editMovQty_${mt.key}" value="${em[mt.key]}"></div>`).join("")}
+        </div>
+        <div class="row2">
+          <button class="btn btn-secondary" id="cancelEditMovement">Annuler</button>
+          <button class="btn btn-primary" id="saveEditMovement">Enregistrer</button>
+        </div>
+      </td>
+    </tr>`;
+  }
+
+  return `
+    <div class="card">
+      <h2>Filtres</h2>
+      <div class="filters">
+        <select id="filterDriver"><option value="">Tous les chauffeurs</option>${driverOpts}</select>
+        <select id="filterSchool"><option value="">Toutes les écoles</option>${schoolOpts}</select>
+        <select id="filterType" style="grid-column:1/-1;">
+          <option value="">Livraison + Récupération</option>
+          <option value="livraison" ${f.type==='livraison'?'selected':''}>Livraison seulement</option>
+          <option value="recuperation" ${f.type==='recuperation'?'selected':''}>Récupération seulement</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-sm" id="exportExcelBtn" style="margin-top:10px;width:100%;">📊 Exporter en Excel (mouvements filtrés + écarts par école)</button>
+    </div>
+    <div class="card">
+      <h2>${list.length} mouvement(s)</h2>
+      <div class="table-wrap">
+      <table>
+        <thead><tr><th>Date</th><th>Chauffeur</th><th>École</th><th>Op.</th><th>Soc.</th><th>Pan.</th><th>Caiss.</th><th>1/2</th><th>1/3</th><th></th></tr></thead>
+        <tbody>
+          ${list.map(m => {
+            if (state.editingMovementId === m.id) return editRowHtml(m);
+            return `
+            <tr>
+              <td>${fmtDate(m.date)}</td>
+              <td>${escapeHtml(m.driverName)}</td>
+              <td>${escapeHtml(m.schoolName)}</td>
+              <td>${m.type==='livraison'?'Livr.':'Récup.'}</td>
+              <td>${m.socles||0}</td><td>${m.paniers||0}</td><td>${m.caisses||0}</td><td>${m.inox12||0}</td><td>${m.inox13||0}</td>
+              <td style="white-space:nowrap;">
+                <button class="btn btn-secondary btn-sm" data-edit-movement="${m.id}">✏️</button>
+                <button class="btn btn-secondary btn-sm" data-delete-movement="${m.id}" style="color:var(--danger);">🗑️</button>
+              </td>
+            </tr>
+          `;
+          }).join("") || `<tr><td colspan="10" class="empty">Aucun mouvement</td></tr>`}
+        </tbody>
+      </table>
+      </div>
+    </div>
+  `;
+}
+
+function escapeHtml(str) {
+  return String(str||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function bindEvents() {
+  document.querySelectorAll("[data-tab]").forEach(btn => {
+    btn.onclick = () => { state.view = btn.dataset.tab; render(); };
+  });
+  document.querySelectorAll("[data-rtab]").forEach(btn => {
+    btn.onclick = () => { state.respTab = btn.dataset.rtab; state.detailSchoolId = null; render(); };
+  });
+
+  const driverSelect = document.getElementById("driverSelect");
+  if (driverSelect) driverSelect.onchange = (e) => { selectPendingDriver(e.target.value); };
+
+  const startAddDriver = document.getElementById("startAddDriver");
+  if (startAddDriver) startAddDriver.onclick = () => { state.addingDriver = true; state.newDriverName = ""; state.newDriverPassword = ""; render(); };
+  const cancelAddDriver = document.getElementById("cancelAddDriver");
+  if (cancelAddDriver) cancelAddDriver.onclick = () => { state.addingDriver = false; render(); };
+  const confirmAddDriver = document.getElementById("confirmAddDriver");
+  if (confirmAddDriver) confirmAddDriver.onclick = () => {
+    addDriver(state.newDriverName, state.newDriverPassword);
+  };
+  const newDriverInput = document.getElementById("newDriverInput");
+  if (newDriverInput) newDriverInput.oninput = (e) => { state.newDriverName = e.target.value; };
+  const newDriverPasswordInput = document.getElementById("newDriverPasswordInput");
+  if (newDriverPasswordInput) newDriverPasswordInput.oninput = (e) => { state.newDriverPassword = e.target.value; };
+
+  const cancelDriverLogin = document.getElementById("cancelDriverLogin");
+  if (cancelDriverLogin) cancelDriverLogin.onclick = () => { state.pendingDriverId = ""; state.driverPasswordInput = ""; render(); };
+  const confirmDriverLoginBtn = document.getElementById("confirmDriverLogin");
+  if (confirmDriverLoginBtn) confirmDriverLoginBtn.onclick = confirmDriverLogin;
+  const driverPasswordInput = document.getElementById("driverPasswordInput");
+  if (driverPasswordInput) driverPasswordInput.oninput = (e) => { state.driverPasswordInput = e.target.value; };
+  const logoutDriverBtn = document.getElementById("logoutDriverBtn");
+  if (logoutDriverBtn) logoutDriverBtn.onclick = logoutDriver;
+
+  const responsablePasswordInput = document.getElementById("responsablePasswordInput");
+  if (responsablePasswordInput) responsablePasswordInput.oninput = (e) => { state.responsablePasswordInput = e.target.value; };
+  const responsableLoginBtn = document.getElementById("responsableLoginBtn");
+  if (responsableLoginBtn) responsableLoginBtn.onclick = tryResponsableLogin;
+  const responsableSetPw1El = document.getElementById("responsableSetPw1");
+  if (responsableSetPw1El) responsableSetPw1El.oninput = (e) => { state.responsableSetPw1 = e.target.value; };
+  const responsableSetPw2El = document.getElementById("responsableSetPw2");
+  if (responsableSetPw2El) responsableSetPw2El.oninput = (e) => { state.responsableSetPw2 = e.target.value; };
+  const responsableSetBtn = document.getElementById("responsableSetBtn");
+  if (responsableSetBtn) responsableSetBtn.onclick = trySetResponsablePassword;
+  const lockResponsableBtn = document.getElementById("lockResponsableBtn");
+  if (lockResponsableBtn) lockResponsableBtn.onclick = lockResponsable;
+
+  const schoolSelect = document.getElementById("schoolSelect");
+  if (schoolSelect) schoolSelect.onchange = (e) => { state.schoolId = e.target.value; render(); };
+
+  document.querySelectorAll("[data-type]").forEach(btn => {
+    btn.onclick = () => { state.type = btn.dataset.type; render(); };
+  });
+
+  document.querySelectorAll("[data-qty]").forEach(inp => {
+    inp.oninput = (e) => { state.qty[inp.dataset.qty] = e.target.value; };
+  });
+
+  const submitBtn = document.getElementById("submitBtn");
+  if (submitBtn) submitBtn.onclick = submitMovement;
+
+  document.querySelectorAll("[data-school-detail]").forEach(row => {
+    row.onclick = () => { state.detailSchoolId = row.dataset.schoolDetail; render(); };
+  });
+  const backBtn = document.getElementById("backToDashboard");
+  if (backBtn) backBtn.onclick = () => { state.detailSchoolId = null; render(); };
+
+  const startAddSchool = document.getElementById("startAddSchool");
+  if (startAddSchool) startAddSchool.onclick = () => { state.addingSchool = true; render(); };
+  const cancelAddSchool = document.getElementById("cancelAddSchool");
+  if (cancelAddSchool) cancelAddSchool.onclick = () => { state.addingSchool = false; render(); };
+  const confirmAddSchool = document.getElementById("confirmAddSchool");
+  if (confirmAddSchool) confirmAddSchool.onclick = addSchool;
+  ["newSchoolName","newSchoolChauffeur","newSchoolAdresse"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.oninput = (e) => {
+      const key = id.replace("newSchool","").toLowerCase();
+      state.newSchool[key] = e.target.value;
+    };
+  });
+
+  const filterDriver = document.getElementById("filterDriver");
+  if (filterDriver) filterDriver.onchange = (e) => { state.filters.driverId = e.target.value; render(); };
+  const filterSchool = document.getElementById("filterSchool");
+  if (filterSchool) filterSchool.onchange = (e) => { state.filters.schoolId = e.target.value; render(); };
+  const filterType = document.getElementById("filterType");
+  if (filterType) filterType.onchange = (e) => { state.filters.type = e.target.value; render(); };
+  const exportBtn = document.getElementById("exportExcelBtn");
+  if (exportBtn) exportBtn.onclick = exportExcel;
+
+  // --- Édition mouvements ---
+  document.querySelectorAll("[data-edit-movement]").forEach(btn => {
+    btn.onclick = () => startEditMovement(btn.dataset.editMovement);
+  });
+  document.querySelectorAll("[data-delete-movement]").forEach(btn => {
+    btn.onclick = () => askConfirm("Supprimer définitivement ce mouvement ?", () => deleteMovement(btn.dataset.deleteMovement));
+  });
+  const cancelEditMov = document.getElementById("cancelEditMovement");
+  if (cancelEditMov) cancelEditMov.onclick = cancelEditMovement;
+  const saveEditMov = document.getElementById("saveEditMovement");
+  if (saveEditMov) saveEditMov.onclick = saveEditMovement;
+  ["editMovDate","editMovType","editMovDriver","editMovSchool"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.onchange = el.oninput = (e) => {
+      if (!state.editMovement) return;
+      if (id === "editMovDate") state.editMovement.date = e.target.value;
+      if (id === "editMovType") state.editMovement.type = e.target.value;
+      if (id === "editMovDriver") state.editMovement.driverId = e.target.value;
+      if (id === "editMovSchool") state.editMovement.schoolId = e.target.value;
+    };
+  });
+  MATERIELS.forEach(mt => {
+    const el = document.getElementById("editMovQty_" + mt.key);
+    if (el) el.oninput = (e) => { if (state.editMovement) state.editMovement[mt.key] = e.target.value; };
+  });
+
+  // --- Édition écoles ---
+  document.querySelectorAll("[data-edit-school]").forEach(btn => {
+    btn.onclick = () => startEditSchool(btn.dataset.editSchool);
+  });
+  document.querySelectorAll("[data-delete-school]").forEach(btn => {
+    btn.onclick = () => askConfirm("Supprimer cette école ? Son historique de mouvements sera conservé mais ne sera plus rattaché à une école active.", () => deleteSchool(btn.dataset.deleteSchool));
+  });
+  const cancelEditSch = document.getElementById("cancelEditSchool");
+  if (cancelEditSch) cancelEditSch.onclick = cancelEditSchool;
+  const saveEditSch = document.getElementById("saveEditSchool");
+  if (saveEditSch) saveEditSch.onclick = saveEditSchool;
+  ["editSchoolName","editSchoolChauffeur","editSchoolAdresse"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.oninput = (e) => {
+      if (!state.editSchool) return;
+      const key = id.replace("editSchool","").toLowerCase();
+      state.editSchool[key] = e.target.value;
+    };
+  });
+
+  // --- Édition chauffeurs ---
+  document.querySelectorAll("[data-edit-driver]").forEach(btn => {
+    btn.onclick = () => startEditDriver(btn.dataset.editDriver);
+  });
+  document.querySelectorAll("[data-delete-driver]").forEach(btn => {
+    btn.onclick = () => askConfirm("Supprimer ce chauffeur ? Son historique de mouvements sera conservé.", () => deleteDriver(btn.dataset.deleteDriver));
+  });
+  const cancelEditDrv = document.getElementById("cancelEditDriver");
+  if (cancelEditDrv) cancelEditDrv.onclick = cancelEditDriver;
+  const saveEditDrv = document.getElementById("saveEditDriver");
+  if (saveEditDrv) saveEditDrv.onclick = saveEditDriver;
+  const editDriverNameInput = document.getElementById("editDriverName");
+  if (editDriverNameInput) editDriverNameInput.oninput = (e) => { state.editDriverName = e.target.value; };
+
+  // --- Modale de confirmation ---
+  const confirmCancelBtn = document.getElementById("confirmCancelBtn");
+  if (confirmCancelBtn) confirmCancelBtn.onclick = () => { state.confirmAction = null; render(); };
+  const confirmOkBtn = document.getElementById("confirmOkBtn");
+  if (confirmOkBtn) confirmOkBtn.onclick = () => {
+    const action = state.confirmAction;
+    state.confirmAction = null;
+    if (action && action.onConfirmFn) action.onConfirmFn();
+    render();
+  };
+}
+
+initDb();
+</script>
+</body>
+</html>
